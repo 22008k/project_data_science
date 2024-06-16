@@ -12,7 +12,7 @@ df_data_batter = pd.read_csv('data_batter.csv')
 
 # Setup Selenium WebDriver with headless option
 options = Options()
-options.headless = True
+options.add_argument("headless")
 service = Service(executable_path='chromedriver.exe')
 driver = webdriver.Chrome(service=service, options=options)
 wait = WebDriverWait(driver, 10)
@@ -44,36 +44,36 @@ for i in range(3, len(df_data_batter) + 3):
         df_data_batter.loc[i - 3, '포지션'] = position
         df_data_batter.loc[i - 3, '투타유형'] = style
 
-        # Click on the button to open a new set of data
-        navigation_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[2]/div[6]/section/div[2]/div[2]/ul/li[5]/a")))
-        navigation_button.click()
-        time.sleep(1)
+        # # Click on the button to open a new set of data
+        # navigation_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[2]/div[6]/section/div[2]/div[2]/ul/li[5]/a")))
+        # navigation_button.click()
+        # time.sleep(1)
 
-        # Interact with dropdown menu
-        dropdown_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select_si"]/button')))
-        dropdown_button.click()
-        time.sleep(0.5)
+        # # Interact with dropdown menu
+        # dropdown_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select_si"]/button')))
+        # dropdown_button.click()
+        # time.sleep(0.5)
         
-        dropdown_selection = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select_si"]/ul/li[5]')))
-        dropdown_selection.click()
-        time.sleep(2)
+        # dropdown_selection = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select_si"]/ul/li[5]')))
+        # dropdown_selection.click()
+        # time.sleep(2)
 
-        # Collect specific data from the table
-        data_collected = {}
-        cnt = 0
-        for start, end in indices_ranges:
-            for idx in range(start, end + 1):
-                data_xpath = f"/html/body/div[2]/div[6]/section/div[3]/table/tbody/tr[{idx}]/td[19]"
-                data_element = driver.find_element(By.XPATH, data_xpath)
-                data_collected[labels[cnt]] = data_element.text if data_element else 'No data'
-                cnt += 1
+        # # Collect specific data from the table
+        # data_collected = {}
+        # cnt = 0
+        # for start, end in indices_ranges:
+        #     for idx in range(start, end + 1):
+        #         data_xpath = f"/html/body/div[2]/div[6]/section/div[3]/table/tbody/tr[{idx}]/td[19]"
+        #         data_element = driver.find_element(By.XPATH, data_xpath)
+        #         data_collected[labels[cnt]] = data_element.text if data_element else 'No data'
+        #         cnt += 1
         
-        # Example of storing data in df_data_batter
-        for label, value in data_collected.items():
-            df_data_batter.at[i-3, label] = value
+        # # Example of storing data in df_data_batter
+        # for label, value in data_collected.items():
+        #     df_data_batter.at[i-3, label] = value
         
-        # print(df_data_batter.iloc[i-3])
-        # print('\n')
+        # # print(df_data_batter.iloc[i-3])
+        # # print('\n')
         
         # Navigate back to the initial list page
         print(f"{i-2}/{len(df_data_batter)}")
@@ -86,5 +86,5 @@ for i in range(3, len(df_data_batter) + 3):
 driver.quit()
 
 # Save the updated DataFrame
-df_data_batter.to_csv('batter_data_option2.csv', index=False)
+df_data_batter.to_csv('22222.csv', index=False)
 print("Data scraping and saving completed.")
