@@ -46,7 +46,7 @@ soup = BeautifulSoup(html_content, 'html.parser')
 rows = soup.find_all('tr')
 
 # 데이터를 저장할 딕셔너리
-data_teambatting = {'Name': [], 'GDP': [], 'GDP%': [], '잔루':[], '잔루%':[], '희생번트실패':[], '희생번트실패%':[]}
+data_teambatting = {'Name': [], 'GDP': [], 'GDP%': [], '잔루':[], '잔루%':[], '희생번트실패':[], '희생번트실패%': []}
 
 
 # 중복 이름 확인을 위한 집합
