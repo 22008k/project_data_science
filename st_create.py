@@ -14,6 +14,7 @@ mpl.rcParams['font.family'] = 'NanumGothic'
 font_path = 'NanumGothic.ttf'  # 폰트 파일 경로를 정확하게 지정하세요.
 font_name = fm.FontProperties(fname=font_path).get_name()
 mpl.rcParams['font.family'] = font_name
+plt.rc('font', family=font_name)
 
 # Use st.cache_data to cache file reads
 @st.cache_data
