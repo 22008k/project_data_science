@@ -466,6 +466,12 @@ elif selected_option == 'vs':
 elif selected_option == 'NEW 지표!':
     st.title('NEW 지표!')
     st.write('BS 지표 데이터를 확인하세요.')
+    
+    fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
+    
+    st.write(fm.fontManager.ttflist)
+    st.write(type(fm.fontManager.ttflist))
 
     # BS 지표 데이터프레임을 스트림릿 애플리케이션에 표시
     st.dataframe(df_bs_data[['Name', 'BS지표']])
@@ -482,11 +488,6 @@ elif selected_option == 'NEW 지표!':
     
     # font_file = fm.findSystemFonts(fontpaths='NanumGothic.ttf')
 
-    fm.fontManager.addfont(font_file)
-    fm._load_fontmanager(try_read_cache=False)
-    
-    st.write(fm.fontManager.ttflist)
-    st.write(type(fm.fontManager.ttflist))
     
     
     font_name = fm.FontProperties(fname='NanumGothic.ttf').get_name()
