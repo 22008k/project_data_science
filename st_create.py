@@ -448,28 +448,31 @@ elif selected_option == 'vs':
                 startangle=90
             )
             ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+            ax.set_title('안타 치거나 아웃될 확률 그래프')
             st.pyplot(fig)
 
             # 좌측 확률, 좌중간 확률, 중간 확률, 우중간 확률, 우측 확률을 원그래프로 시각화
             fig, ax = plt.subplots()
             ax.pie(
                 [result['좌측 확률'], result['좌중간 확률'], result['중간 확률'], result['우중간 확률'], result['우측 확률']],
-                labels=['Left', 'Left-Center', 'Center', 'Right-Center', 'Right'],
+                labels=['좌측 확률', '좌중간 확률', '중간 확률', '우중간 확률', '우측 확률'],
                 autopct='%1.1f%%',
                 startangle=90
             )
             ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+            ax.set_title('타격한 공 날라갈 방향 추측 확률 그래프')
             st.pyplot(fig)
 
             # 1루타, 2루타, 3루타, 홈런, 뜬공, 땅볼, 직선타 확률을 원그래프로 시각화
             fig, ax = plt.subplots()
             ax.pie(
                 [result['1루타 확률'], result['2루타 확률'], result['3루타 확률'], result['홈런 확률'], result['뜬공 확률'], result['땅볼 확률'], result['직선타 확률']],
-                labels=['1B 확률', '2B 확률', '3B 확률', 'HR 확률', 'FB 확률', 'GB 확률', 'LD 확률'],
+                labels=['1루타 확률', '2루타 확률', '3루타 확률', '홈런 확률', '뜬공 확률', '땅볼 확률', '직선타 확률'],
                 autopct='%1.1f%%',
                 startangle=90
             )
             ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+            ax.set_title('타격한 공 종류 추측 확률 그래프')
             st.pyplot(fig)
 
 elif selected_option == 'NEW 지표!':
