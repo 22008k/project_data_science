@@ -4,6 +4,7 @@ import re
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib as mpl
+import random
 
 # 한글 폰트 설정
 mpl.rcParams['font.family'] = 'NanumGothic'
@@ -20,7 +21,8 @@ df_pitcher_name = load_data('pitcher_data.csv')
 df_pitcher_stat = load_data('data_pitcher.csv')
 df_bs_data = load_data('bs_data.csv')
 df_bs_base_data = load_data('bs_base_data.csv')
-
+# Display columns to check for the correct column names
+print(df_batter_stat.columns.tolist())
 df_merged = pd.merge(df_bs_data, df_batter_stat[['Name', 'WAR']], on='Name', how='inner')
 
 
@@ -56,15 +58,19 @@ if 'button_clicked' not in st.session_state:
 def display_player_data(player_data, stat_data=None):
     col1, col2 = st.columns(2)
     with col1:
+        st.markdown('<div class="personal-info">', unsafe_allow_html=True)
         st.markdown("### Personal Info")
-        st.write(f"**Name:** {player_data['Name']}")
-        st.write(f"**Team:** {player_data['Team']}")
-        st.write(f"**Position:** {player_data['Position']}")
-        st.write(f"**Birth:** {player_data['Birth'][5:]}")
+        st.markdown(f"**Name:** <span class='highlight'>{player_data['Name']}</span>", unsafe_allow_html=True)
+        st.markdown(f"**Team:** {player_data['Team']}")
+        st.markdown(f"**Position:** {player_data['Position']}")
+        st.markdown(f"**Birth:** {player_data['Birth'][5:]}")
+        st.markdown('</div>', unsafe_allow_html=True)
     with col2:
+        st.markdown('<div class="game-stats">', unsafe_allow_html=True)
         st.markdown("### Game Stats")
         for key, value in stat_data.to_dict().items():
-            st.write(f"**{key}:** {value}")
+            st.markdown(f"**{key}:** <span class='highlight'>{value}</span>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # 숫자형 데이터 형식 변환
 for col in df_batter_stat.columns:
@@ -97,7 +103,28 @@ pitcher_columns = [
 
 batter_data = df_batter_stat[batter_columns].copy()
 pitcher_data = df_pitcher_stat[pitcher_columns].copy()
-
+# Additional CSS for better styling
+st.markdown(
+    """
+    <style>
+    .highlight {
+        color: #ffcc00;
+        font-weight: bold;
+    }
+    .personal-info, .game-stats {
+        padding: 20px;
+        background-color: #282828;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .personal-info h2, .game-stats h2 {
+        border-bottom: 2px solid #ffcc00;
+        padding-bottom: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # 예측 함수 작성
 def predict_matchup(batter_name, pitcher_name):
     batter = batter_data[batter_data['Name'] == batter_name]
@@ -323,42 +350,42 @@ if selected_option == '야구 데이터 설명':
     ''')
 
 elif selected_option == '타자정보':
+    
     st.title('타자 정보')
-    name_query = st.text_input("이름을 입력하세요:", on_change=reset_state)
-
-    if name_query:
-        results = df_batter_name[df_batter_name['Name'].str.contains(name_query, case=False)]
+    
+    batter_name = st.selectbox("타자를 선택하세요:", df_batter_name['Name'].unique())
+    if batter_name:
+        results = df_batter_name[df_batter_name['Name'] == batter_name]
         if not results.empty:
-            st.write("검색 결과:")
+            st.write("선택한 타자 정보:")
             for i, row in results.iterrows():
                 button_key = f"button_{i}"
-                if st.session_state.button_clicked:
-                    continue
-
                 if st.button(f"{row['Name']} - {row['Position']} at {row['Team']}", key=button_key):
                     st.session_state['selected_row'] = row.to_dict()
                     row['Name'] = re.sub(r'\s*\(.*?\)', '', row['Name'])
                     matching_stats = df_batter_stat[df_batter_stat['Name'] == row['Name']].iloc[0]
                     st.session_state['stat_data'] = matching_stats if not matching_stats.empty else None
-                    st.session_state.button_clicked = True
-
-            if 'selected_row' in st.session_state and 'stat_data' in st.session_state:
-                display_player_data(st.session_state['selected_row'], st.session_state['stat_data'])
-
+                    st.session_state['button_clicked'] = True
+                
+            if st.session_state.get('button_clicked', False):
+                if 'selected_row' in st.session_state and 'stat_data' in st.session_state:
+                    display_player_data(st.session_state['selected_row'], st.session_state['stat_data'])
+                # Reset button clicked state
+                st.session_state['button_clicked'] = False
         else:
-            st.error("검색된 결과가 없습니다.")
+            st.error("선택한 타자 정보가 없습니다.")
 
 elif selected_option == '투수정보':
     st.title('투수 정보')
-    name_query = st.text_input("이름을 입력하세요:", on_change=reset_state)
-
-    if name_query:
-        results = df_pitcher_name[df_pitcher_name['Name'].str.contains(name_query, case=False)]
+    
+    pitcher_name = st.selectbox("투수를 선택하세요:", df_pitcher_name['Name'].unique())
+    if pitcher_name:
+        results = df_pitcher_name[df_pitcher_name['Name'] == pitcher_name]
         if not results.empty:
-            st.write("검색 결과:")
+            st.write("선택한 투수 정보:")
             for i, row in results.iterrows():
                 button_key = f"button_{i}"
-                if st.session_state.button_clicked:
+                if st.session_state.get('button_clicked', False):
                     continue
 
                 if st.button(f"{row['Name']} - {row['Position']} at {row['Team']}", key=button_key):
@@ -366,22 +393,26 @@ elif selected_option == '투수정보':
                     row['Name'] = re.sub(r'\s*\(.*?\)', '', row['Name'])
                     matching_stats = df_pitcher_stat[df_pitcher_stat['Name'] == row['Name']].iloc[0]
                     st.session_state['stat_data'] = matching_stats if not matching_stats.empty else None
-                    st.session_state.button_clicked = True
+                    st.session_state['button_clicked'] = True
 
-            if 'selected_row' in st.session_state and 'stat_data' in st.session_state:
-                display_player_data(st.session_state['selected_row'], st.session_state['stat_data'])
-
+            if st.session_state.get('button_clicked', False):
+                if 'selected_row' in st.session_state and 'stat_data' in st.session_state:
+                    display_player_data(st.session_state['selected_row'], st.session_state['stat_data'])
+                # Reset button clicked state
+                st.session_state['button_clicked'] = False
         else:
-            st.error("검색된 결과가 없습니다.")
+            st.error("선택한 투수 정보가 없습니다.")
+
 
 elif selected_option == 'vs':
     st.title('대결')
 
     col1, col2 = st.columns(2)
     with col1:
-        batter_name = st.text_input('타자의 이름을 입력해주세요:', key='batter_input')
+        batter_name = st.selectbox('타자를 선택하세요:', batter_data['Name'].unique(), key='batter_select')
     with col2:
-        pitcher_name = st.text_input('투수의 이름을 입력해주세요:', key='pitcher_input')
+        pitcher_name = st.selectbox('투수를 선택하세요:', pitcher_data['Name'].unique(), key='pitcher_select')
+
 
     if st.button('예측 실행'):
         if batter_name not in batter_data['Name'].values:
@@ -485,4 +516,121 @@ elif selected_option == 'NEW 지표!':
             st.error("해당 선수의 데이터를 찾을 수 없습니다.")
 
 elif selected_option == '미니게임':
-    pass
+    st.write("""
+    # 야구 시뮬레이터
+    이 앱을 통해 선택한 타자와 투구 위치, 투구 유형을 바탕으로 실제 투구 결과를 예측할 수 있습니다.
+
+    ## 사용 방법
+
+    1. **타자 선택:** 드롭다운 메뉴에서 타자를 선택하세요.
+    2. **투구 위치 선택:** 3x3 그리드에서 투구 위치(1~9)를 선택하세요.
+    3. **투구 유형 선택:** 라디오 버튼에서 직구 또는 변화구를 선택하세요.
+    4. **예측:** "예측!" 버튼을 눌러 결과를 확인하세요.
+
+    예측한 투구 위치와 유형이 실제 투구와 얼마나 일치하는지에 따라 다양한 타격 결과가 나옵니다.
+    """)
+
+    # Display the columns to check the correct column names
+    # st.write("데이터프레임 열 이름:", df_batter_stat.columns.tolist())
+
+
+    # Display 3x3 grid using HTML
+    st.markdown("""
+    <style>
+    .table-container {
+        display: flex;
+        justify-content: center;
+    }
+    table {
+        border-collapse: collapse;
+        margin: 20px 0;
+        table-layout: fixed;
+    }
+    table, th, td {
+        border: 1px solid black;
+        width: 100px;
+        height: 100px;
+        text-align: center;
+        font-size: 24px;
+    }
+    </style>
+    <div class="table-container">
+    <table>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>8</td>
+            <td>9</td>
+        </tr>
+    </table>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Helper function to check if two positions are in the same line
+    def same_line(pos1, pos2):
+        rows = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        cols = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+        diags = [[1, 5, 9], [3, 5, 7]]
+        lines = rows + cols + diags
+        return any(pos1 in line and pos2 in line for line in lines)
+
+    # Select batter
+    batter_name = st.selectbox("타자를 선택하세요", df_batter_stat['Name'].unique())
+
+    # Select pitch location (3x3 grid, represented as 1-9)
+    pitch_location = st.selectbox("투구 위치를 선택하세요 (1-9)", list(range(1, 10)))
+
+    # Select pitch type
+    pitch_type = st.radio("투구 유형을 선택하세요", ['직구', '변화구'])
+
+    # Predict button
+    if st.button("예측!"):
+        # Get the selected batter's data
+        batter_data = df_batter_stat[df_batter_stat['Name'] == batter_name].iloc[0]
+        
+        # Randomly determine the actual pitch location and type
+        actual_pitch_location = random.choice(list(range(1, 10)))
+        actual_pitch_type = random.choice(['직구', '변화구'])
+
+        st.write(f"실제 투구 위치: {actual_pitch_location}, 실제 투구 유형: {actual_pitch_type}")
+
+        # Define hit and out probabilities
+        hit_probabilities = {
+            '좌중간 안타': batter_data['좌중안타비율'],
+            '중간 안타': batter_data['중안타비율'],
+            '우중간 안타': batter_data['우중안타비율'],
+            '좌익수 앞 안타': batter_data['좌_안타비율'],
+            '우익수 앞 안타': batter_data['우안타비율'],
+            '당겨서 안타': batter_data['당안타비율'],
+            '밀어서 안타': batter_data['밀안타비율']
+        }
+
+        out_probabilities = {
+            '뜬공': 0.25,
+            '땅볼': 0.25,
+            '직선타': 0.2
+        }
+
+        total_probabilities = {**hit_probabilities, **out_probabilities}
+        total = sum(total_probabilities.values())
+        normalized_probabilities = {k: v/total for k, v in total_probabilities.items()}
+
+        # Determine the result
+        if pitch_type == actual_pitch_type:
+            if same_line(pitch_location, actual_pitch_location):
+                result = random.choices(list(normalized_probabilities.keys()), list(normalized_probabilities.values()), k=1)[0]
+            else:
+                result = random.choices(list(out_probabilities.keys()), list(out_probabilities.values()), k=1)[0]
+        else:
+            result = '삼진'
+        
+        st.write(f"결과: {result}")
