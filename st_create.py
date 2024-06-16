@@ -443,7 +443,7 @@ elif selected_option == 'vs':
             fig, ax = plt.subplots()
             ax.pie(
                 [result['안타 확률'], result['아웃 확률']],
-                labels=['Hit probability', 'Out probability'],
+                labels=['안타 확률', '아웃 확률'],
                 autopct='%1.1f%%',
                 startangle=90
             )
@@ -465,7 +465,7 @@ elif selected_option == 'vs':
             fig, ax = plt.subplots()
             ax.pie(
                 [result['1루타 확률'], result['2루타 확률'], result['3루타 확률'], result['홈런 확률'], result['뜬공 확률'], result['땅볼 확률'], result['직선타 확률']],
-                labels=['1B probability', '2B probability', '3B probability', 'HR probability', 'FB probability', 'GB probability', 'LD probability'],
+                labels=['1B 확률', '2B 확률', '3B 확률', 'HR 확률', 'FB 확률', 'GB 확률', 'LD 확률'],
                 autopct='%1.1f%%',
                 startangle=90
             )
