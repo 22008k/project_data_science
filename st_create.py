@@ -5,9 +5,18 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib as mpl
 import random
+import os
+
 
 # 한글 폰트 설정
 mpl.rcParams['font.family'] = 'NanumGothic'
+
+font_dir = 'NanumGothic.ttf'
+font_file = fm.findSystemFonts(fontpaths=font_dir)
+
+fm.fontManager.addfont(font_file)
+fm._load_fontmanager(try_read_cache=False)
+plt.rc('font', family=fm.fontManager.ttflist[0].name)
 
 # Use st.cache_data to cache file reads
 @st.cache_data
