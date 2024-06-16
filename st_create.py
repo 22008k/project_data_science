@@ -427,7 +427,7 @@ elif selected_option == 'vs':
             fig, ax = plt.subplots()
             ax.pie(
                 [result['안타 확률'], result['아웃 확률']],
-                labels=['안타 확률', '아웃 확률'],
+                labels=['Hit probability', 'Out probability'],
                 autopct='%1.1f%%',
                 startangle=90
             )
@@ -438,7 +438,7 @@ elif selected_option == 'vs':
             fig, ax = plt.subplots()
             ax.pie(
                 [result['좌측 확률'], result['좌중간 확률'], result['중간 확률'], result['우중간 확률'], result['우측 확률']],
-                labels=['좌측 확률', '좌중간 확률', '중간 확률', '우중간 확률', '우측 확률'],
+                labels=['Left', 'Left-Center', 'Center', 'Right-Center', 'Right'],
                 autopct='%1.1f%%',
                 startangle=90
             )
@@ -449,7 +449,7 @@ elif selected_option == 'vs':
             fig, ax = plt.subplots()
             ax.pie(
                 [result['1루타 확률'], result['2루타 확률'], result['3루타 확률'], result['홈런 확률'], result['뜬공 확률'], result['땅볼 확률'], result['직선타 확률']],
-                labels=['1루타 확률', '2루타 확률', '3루타 확률', '홈런 확률', '뜬공 확률', '땅볼 확률', '직선타 확률'],
+                labels=['1B probability', '2B probability', '3B probability', 'HR probability', 'FB probability', 'GB probability', 'LD probability'],
                 autopct='%1.1f%%',
                 startangle=90
             )
@@ -469,8 +469,8 @@ elif selected_option == 'NEW 지표!':
     fig, ax = plt.subplots()
     ax.bar(top_10_bs['Name'], top_10_bs['BS지표'])
     ax.set_xlabel('Name')
-    ax.set_ylabel('BS 지표')
-    ax.set_title('Top 10 BS 지표')
+    ax.set_ylabel('BS data')
+    ax.set_title('Top 10 BS data')
     plt.xticks(rotation=45)
 
     st.pyplot(fig)
@@ -478,9 +478,9 @@ elif selected_option == 'NEW 지표!':
     # BS지표와 WAR의 관계를 나타내는 그래프
     fig, ax = plt.subplots()
     ax.scatter(df_merged['BS지표'], df_merged['WAR'])
-    ax.set_xlabel('BS지표')
+    ax.set_xlabel('BS data')
     ax.set_ylabel('WAR')
-    ax.set_title('BS지표와 WAR의 관계')
+    ax.set_title('BS data, WAR')
     st.pyplot(fig)
 
     # 선수 이름 검색
@@ -505,9 +505,9 @@ elif selected_option == 'NEW 지표!':
             player_stats = player_data_base[numeric_columns].iloc[0]
             fig, ax = plt.subplots()
             ax.bar(player_stats.index, player_stats.values)
-            ax.set_xlabel('지표')
-            ax.set_ylabel('값')
-            ax.set_title(f'{player_name}의 정규화된 지표')
+            ax.set_xlabel('bs data')
+            ax.set_ylabel('data')
+            ax.set_title(f"{player_name}'s data")
             plt.xticks(rotation=45)
 
             st.pyplot(fig)
