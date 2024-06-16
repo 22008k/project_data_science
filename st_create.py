@@ -21,8 +21,7 @@ df_pitcher_name = load_data('pitcher_data.csv')
 df_pitcher_stat = load_data('data_pitcher.csv')
 df_bs_data = load_data('bs_data.csv')
 df_bs_base_data = load_data('bs_base_data.csv')
-# Display columns to check for the correct column names
-print(df_batter_stat.columns.tolist())
+
 df_merged = pd.merge(df_bs_data, df_batter_stat[['Name', 'WAR']], on='Name', how='inner')
 
 
