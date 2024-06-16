@@ -10,11 +10,11 @@ import random
 # 한글 폰트 설정
 mpl.rcParams['font.family'] = 'NanumGothic'
 
-# 한글 폰트 설정
-font_path = 'NanumGothic.ttf'  # 폰트 파일 경로를 정확하게 지정하세요.
-font_name = fm.FontProperties(fname=font_path).get_name()
-mpl.rcParams['font.family'] = font_name
-plt.rc('font', family=font_name)
+# # 한글 폰트 설정
+# font_path = 'NanumGothic.ttf'  # 폰트 파일 경로를 정확하게 지정하세요.
+# font_name = fm.FontProperties(fname=font_path).get_name()
+# mpl.rcParams['font.family'] = font_name
+# plt.rc('font', family=font_name)
 
 # Use st.cache_data to cache file reads
 @st.cache_data
@@ -479,7 +479,17 @@ elif selected_option == 'NEW 지표!':
     ax.set_ylabel('BS data')
     ax.set_title('Top 10 BS data')
     plt.xticks(rotation=45)
-    font_name = fm.FontProperties(fname=font_path).get_name()
+    
+    font_file = fm.findSystemFonts(fontpaths='NanumGothic.ttf')
+
+    fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
+    
+    st.write(fm.fontManager.ttflist)
+    st.write(type(fm.fontManager.ttflist))
+    
+    
+    font_name = fm.FontProperties(fname='NanumGothic.ttf').get_name()
     mpl.rcParams['font.family'] = font_name
     plt.rc('font', family=font_name)
 
