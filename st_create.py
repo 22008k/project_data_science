@@ -5,10 +5,19 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib as mpl
 import random
+import os
+import matplotlib.font_manager as fm  # 폰트 관련 용도 as fm
 
+def fontRegistered():
+    font_dirs = [os.getcwd() + '/customFonts']
+    font_files = fm.findSystemFonts(fontpaths=font_dirs)
 
-# 한글 폰트 설정
-mpl.rcParams['font.family'] = 'NanumGothic'
+    for font_file in font_files:
+        fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
+    
+fontRegistered()
+plt.rc('font', family='NanumGothic')
 
 # # 한글 폰트 설정
 # font_path = 'NanumGothic.ttf'  # 폰트 파일 경로를 정확하게 지정하세요.
@@ -467,12 +476,6 @@ elif selected_option == 'NEW 지표!':
     st.title('NEW 지표!')
     st.write('BS 지표 데이터를 확인하세요.')
     
-    font_file = fm.findSystemFonts(fontpaths='NanumGothic.ttf')
-    fm.fontManager.addfont(font_file)
-    fm._load_fontmanager(try_read_cache=False)
-    
-    st.write(fm.fontManager.ttflist)
-    st.write(type(fm.fontManager.ttflist))
 
     # BS 지표 데이터프레임을 스트림릿 애플리케이션에 표시
     st.dataframe(df_bs_data[['Name', 'BS지표']])
