@@ -479,6 +479,9 @@ elif selected_option == 'NEW 지표!':
     ax.set_ylabel('BS data')
     ax.set_title('Top 10 BS data')
     plt.xticks(rotation=45)
+    font_name = fm.FontProperties(fname=font_path).get_name()
+    mpl.rcParams['font.family'] = font_name
+    plt.rc('font', family=font_name)
 
     st.pyplot(fig)
 
