@@ -467,6 +467,7 @@ elif selected_option == 'NEW 지표!':
     st.title('NEW 지표!')
     st.write('BS 지표 데이터를 확인하세요.')
     
+    font_file = fm.findSystemFonts(fontpaths='NanumGothic.ttf')
     fm.fontManager.addfont(font_file)
     fm._load_fontmanager(try_read_cache=False)
     
@@ -486,7 +487,6 @@ elif selected_option == 'NEW 지표!':
     ax.set_title('Top 10 BS data')
     plt.xticks(rotation=45)
     
-    # font_file = fm.findSystemFonts(fontpaths='NanumGothic.ttf')
 
     
     
